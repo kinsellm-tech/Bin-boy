@@ -1,5 +1,5 @@
 const express = require("express");
-const chromium = require("chrome-aws-lambda");
+const chromium = require("@sparticuz/chromium");
 const puppeteer = require("puppeteer-core");
 
 const app = express();
@@ -15,7 +15,7 @@ async function scrapeCollections() {
   console.log("Launching browser...");
   const browser = await puppeteer.launch({
     args: chromium.args,
-    executablePath: await chromium.executablePath,
+    executablePath: await chromium.executablePath(),
     headless: chromium.headless,
   });
 
