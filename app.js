@@ -1,5 +1,6 @@
 const express = require("express");
-const puppeteer = require("puppeteer");
+const chromium = require("chrome-aws-lambda");
+const puppeteer = require("puppeteer-core");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -13,13 +14,9 @@ const CACHE_DURATION = 6 * 60 * 60 * 1000; // 6 hours
 async function scrapeCollections() {
   console.log("Launching browser...");
   const browser = await puppeteer.launch({
-    args: [
-      "--no-sandbox",
-      "--disable-setuid-sandbox",
-      "--disable-dev-shm-usage",
-      "--disable-gpu",
-    ],
-    headless: "new",
+    args: chromium.args,
+    executablePath: await chromium.executablePath,
+    headless: chromium.headless,
   });
 
   try {
@@ -50,7 +47,7 @@ async function scrapeCollections() {
       return rows;
     });
 
-    // Try to extract list items
+    // Try to extract list items with dates
     const listItems = await page.evaluate(() => {
       return Array.from(document.querySelectorAll("li, p, div"))
         .map(el => el.innerText.trim())
@@ -96,7 +93,7 @@ async function scrapeCollections() {
       }
     }
 
-    // If still nothing, return the raw text for debugging
+    // If still nothing, return raw text for debugging
     if (collections.length === 0) {
       return { success: false, debug: bodyText.substring(0, 2000), tableRows, listItems };
     }
