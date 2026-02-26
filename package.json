@@ -4,11 +4,15 @@
   "description": "Bin Boy - RBWM bin collection scraper",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "install": "npm install --legacy-peer-deps"
   },
   "dependencies": {
     "express": "^4.18.2",
     "@sparticuz/chromium": "^123.0.0",
     "puppeteer-core": "^22.0.0"
+  },
+  "config": {
+    "legacy-peer-deps": "true"
   }
 }
